@@ -1,0 +1,184 @@
+group 'br.com.nome'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'io.qameta.allure'
+
+sourceCompatibility = 1.8
+
+buildscript {
+   repositories {
+       jcenter()
+       
+   }
+
+   dependencies {
+       classpath 'io.qameta.allure:allure-gradle:2.5'
+   }
+
+}
+
+allure {
+   version = '2.2.1'
+   autoconfigure = true
+
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testRuntime
+    }
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+sourceSets {
+
+    test {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+    }
+}
+
+repositories {
+       mavenCentral()
+       
+}
+
+task runAndroid() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions',
+                    'src/main/features/' + System.getProperty('feature') + '.feature',
+                    '--tags', System.getProperty("tags"),
+                    ]                    
+            systemProperty "environment", "android"
+        }
+    }
+}
+
+
+task runIos() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+            		'--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions',
+                    'src/main/features/' + System.getProperty('feature') + '.feature',
+                    '--tags', System.getProperty("tags"),
+                    ]
+            systemProperty "environment", "ios"
+        }
+    }
+}
+
+task runAndroidTests() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions', 'src/main/features/',
+                    '--tags', '~@iosOnly',
+                    '--tags', '~@instrumentado', 
+                    '--tags', '~@backlog', 
+                    '--tags', '~@documentacao', 
+                    ]                    
+            systemProperty "environment", "android"
+        }
+    }
+}
+
+task runIosTests() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+            		'--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions', 'src/main/features/',
+                    '--tags', '~@androidOnly',
+                    '--tags', '~@instrumentado', 
+                    '--tags', '~@backlog',
+                    '--tags', '~@documentacao',
+                    ]
+            systemProperty "environment", "ios"
+        }
+    }
+}
+
+task runAndroidFeature() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions',
+                    'src/main/features/' + System.getProperty('feature') + '.feature',
+                    '--tags', '~@iosOnly',
+                    '--tags', '~@instrumentado', 
+                    '--tags', '~@backlog', 
+                    '--tags', '~@documentacao', 
+                    ]                    
+            systemProperty "environment", "android"
+        }
+    }
+}
+
+
+task runIosFeature() {
+    dependsOn assemble, compileTestJava
+
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+            		'--plugin','io.qameta.allure.cucumberjvm.AllureCucumberJvm',
+                    '--glue', 'stepDefinitions',
+                    'src/main/features/' + System.getProperty('feature') + '.feature',
+                    '--tags', '~@androidOnly',
+                    '--tags', '~@instrumentado', 
+                    '--tags', '~@backlog',
+                    '--tags', '~@documentacao',
+                    ]
+            systemProperty "environment", "ios"
+        }
+    }
+}
+
+dependencies {
+	compile group: 'junit', name: 'junit', version: '4.12'
+	//compile "io.cucumber:cucumber-jvm:3.0.2"
+	compile "info.cukes:cucumber-java:1.2.4"
+    compile "io.appium:java-client:4.1.2"
+    compile "info.cukes:cucumber-junit:1.2.4"
+    compile "io.qameta.allure:allure-cucumber-jvm:2.6.0"
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.4.0-b180725.0427'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta2'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.8.0-beta2'
+    
+}
+
