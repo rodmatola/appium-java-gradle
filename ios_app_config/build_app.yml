@@ -1,0 +1,7 @@
+## command: ruby config/scripts/ios/build_app.rb matola
+matola:
+  xcworkspace: "seu/caminho"
+  scheme: Nome_que_quiser
+  configuration: Debug
+  destination: "platform=iOS Simulator,name=iPhone 8"
+  export_path: "caminho/do/app"
