@@ -28,6 +28,7 @@ public class AppiumDriverHelper {
                 cap.setCapability(MobileCapabilityType.VERSION, "5.0");
                 cap.setCapability("platformName", "Android");
                 cap.setCapability("app", new File("/Users/.../app/build/outputs/apk/alpha/debug/app-alpha-debug.apk"));
+//		    	cap.setCapability("app", new File(System.getenv("ANDROID_APK")));
                 cap.setCapability ("unicodeKeyboard", true);
                 cap.setCapability ("resetKeyboard", true);
                 driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), cap);
@@ -40,6 +41,7 @@ public class AppiumDriverHelper {
                     cap.setCapability(MobileCapabilityType.VERSION, "11.4");
                     cap.setCapability("platformName", "IOS");
                     cap.setCapability("app", new File("../iOS_Simulator_iPhone_8/nome.app"));
+//					cap.setCapability("app", new File(System.getenv("IOS_APP")));
                     cap.setCapability("noReset", true);
                     driver = new IOSDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), cap);
 
